@@ -1,0 +1,22 @@
+.app-surface {
+  padding: 1rem;
+  min-height: 100svh;
+  height: 100svh;
+  background:
+    radial-gradient(circle at 15% 18%, rgba(214, 239, 82, 0.07), transparent 32%),
+    radial-gradient(circle at 85% 12%, rgba(14, 17, 22, 0.28), transparent 30%),
+    var(--background);
+  overflow: hidden;
+}
+
+.app-surface.is-compact {
+  padding: 0.75rem;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,63 @@
+.terminal-input {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.terminal-label {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.terminal-field {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--border-subtle);
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.6rem;
+  background: var(--surface-1);
+  font-family: var(--font-mono);
+}
+
+.terminal-field span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.terminal-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  outline: none;
+}
+
+.terminal-field input::placeholder {
+  color: var(--text-muted);
+}
+
+.terminal-submit {
+  border: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.55rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.terminal-submit:hover,
+.terminal-submit:focus-visible {
+  border-color: var(--border-strong);
+  outline: none;
+  background: linear-gradient(90deg, var(--surface-2), var(--accent-soft));
+}

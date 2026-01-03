@@ -1,0 +1,210 @@
+.global-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-1) 75%, transparent), transparent);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.header-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.brand-mark {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  position: relative;
+}
+
+.brand-name::after {
+  content: "";
+  display: inline-block;
+  width: 0.6ch;
+  margin-left: 0.15ch;
+  opacity: 0;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.page-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-size: 1.25rem;
+}
+
+.page-token {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+  position: relative;
+}
+
+.indicator-row {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.action-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.ghost-button,
+.command-button {
+  border: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+  color: var(--text-primary);
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.55rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.ghost-button:hover,
+.ghost-button:focus-visible,
+.command-button:hover,
+.command-button:focus-visible {
+  border-color: var(--border-strong);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.command-button {
+  background: linear-gradient(135deg, var(--accent-soft), var(--surface-2));
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .ghost-button,
+[data-theme="dark"] .command-button {
+  background: linear-gradient(170deg, color-mix(in srgb, var(--surface-2) 80%, transparent), color-mix(in srgb, var(--surface-3) 70%, transparent));
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .ghost-button:hover,
+[data-theme="dark"] .ghost-button:focus-visible,
+[data-theme="dark"] .command-button:hover,
+[data-theme="dark"] .command-button:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border-strong) 60%);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--surface-2) 85%, transparent), color-mix(in srgb, var(--surface-3) 80%, transparent));
+  box-shadow: var(--shadow-soft);
+}
+
+.compact-actions {
+  position: relative;
+}
+
+.compact-menu {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.global-header.is-compact {
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+}
+
+.global-header.is-compact .header-actions {
+  width: 100%;
+  align-items: flex-start;
+}
+
+.global-header.is-compact .action-row {
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 960px) {
+  .global-header {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost-button,
+  .command-button {
+    transition: none;
+  }
+
+  .brand-name::after {
+    opacity: 0;
+  }
+}
+
+.global-header:hover .brand-name::after,
+.global-header:focus-within .brand-name::after {
+  opacity: 1;
+  content: "█";
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-header:hover .brand-name::after,
+  .global-header:focus-within .brand-name::after {
+    opacity: 1;
+    animation: none;
+  }
+}

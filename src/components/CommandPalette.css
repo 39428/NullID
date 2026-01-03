@@ -1,0 +1,169 @@
+.command-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  z-index: var(--z-overlay, 1200);
+}
+
+.command-dismiss {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: none;
+}
+
+.command-surface {
+  position: relative;
+  width: min(720px, 100%);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.85rem;
+  box-shadow: var(--shadow-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  z-index: 1;
+}
+
+.command-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+}
+
+.command-field span {
+  color: var(--accent);
+}
+
+.command-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  outline: none;
+}
+
+.command-results {
+  max-height: 360px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.command-group {
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.65rem;
+  background: var(--surface-2);
+}
+
+.command-group-title {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.6rem 0.9rem 0.25rem;
+}
+
+.command-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.command-item {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.65rem;
+  align-items: center;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+
+.command-item:hover:not(:disabled),
+.command-item.active:not(:disabled) {
+  border-color: var(--border-strong);
+  background: linear-gradient(135deg, var(--surface-2), var(--accent-soft));
+  transform: translateY(-1px);
+}
+
+.command-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.command-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-start;
+}
+
+.command-id {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.command-text {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.command-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.command-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.command-key {
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.4rem;
+  font-family: var(--font-mono);
+  background: var(--surface-1);
+}
+
+.command-empty {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-overlay {
+    transition: none;
+  }
+
+  .command-item {
+    transition: none;
+  }
+}
