@@ -16,7 +16,7 @@ export interface HashOptions {
 }
 
 type HashFactory = {
-  create: () => import("@noble/hashes/utils").Hash;
+  create: () => import("@noble/hashes/utils").Hash<Uint8Array>;
 };
 
 const hashers: Record<HashAlgorithm, HashFactory> = {
@@ -34,7 +34,11 @@ function ensureActive(signal?: AbortSignal) {
   }
 }
 
-async function finalizeHash(hasher: import("@noble/hashes/utils").Hash, started: number, onProgress?: (percent: number) => void): Promise<HashResult> {
+async function finalizeHash(
+  hasher: import("@noble/hashes/utils").Hash<Uint8Array>,
+  started: number,
+  onProgress?: (percent: number) => void
+): Promise<HashResult> {
   const bytes = new Uint8Array(hasher.digest());
   const elapsed = Math.round(performance.now() - started);
   if (onProgress) onProgress(100);
