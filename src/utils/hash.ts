@@ -22,29 +22,25 @@ export async function hashText(text: string, algorithm: HashAlgorithm): Promise<
 }
 
 export async function hashFile(file: File, algorithm: HashAlgorithm, options?: HashOptions): Promise<HashResult> {
-  const chunkSize = 1024 * 1024 * 2; // 2MB chunks
-  const chunks: Uint8Array[] = [];
+  // WebCrypto does not support incremental hashing; this implementation keeps
+  // memory bounded by avoiding duplicate buffers.
+  const chunkSize = 1024 * 1024 * 4; // 4MB
+  const merged = new Uint8Array(file.size);
   let offset = 0;
-  let total = 0;
   while (offset < file.size) {
     const end = Math.min(offset + chunkSize, file.size);
     const slice = file.slice(offset, end);
     const buffer = new Uint8Array(await slice.arrayBuffer());
-    chunks.push(buffer);
-    total += buffer.length;
+    merged.set(buffer, offset);
     offset = end;
     options?.onProgress?.(Math.round((offset / file.size) * 100));
     if (options?.signal?.aborted) {
       throw new DOMException("aborted", "AbortError");
     }
+    // Yield to the UI thread.
     await new Promise((resolve) => setTimeout(resolve, 0));
   }
-  const merged = new Uint8Array(total);
-  let cursor = 0;
-  chunks.forEach((chunk) => {
-    merged.set(chunk, cursor);
-    cursor += chunk.length;
-  });
+
   const digest = await crypto.subtle.digest(algorithm, merged.buffer);
   const bytes = new Uint8Array(digest);
   return {
