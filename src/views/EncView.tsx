@@ -27,14 +27,24 @@ export function EncView({ onOpenGuide }: EncViewProps) {
   const [error, setError] = useState<string | null>(null);
   const encryptFileInput = useRef<HTMLInputElement>(null);
   const decryptFileInput = useRef<HTMLInputElement>(null);
+  const clearTimerRef = useRef<number | null>(null);
+
+  const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25MB (envelope expands ~33%)
 
   const scheduleClear = useCallback(() => {
     if (!autoClear) return;
-    window.setTimeout(() => {
+    if (clearTimerRef.current) window.clearTimeout(clearTimerRef.current);
+    clearTimerRef.current = window.setTimeout(() => {
       setPlain("");
       setDecrypted("");
     }, clearAfter * 1000);
   }, [autoClear, clearAfter]);
+
+  useEffect(() => {
+    return () => {
+      if (clearTimerRef.current) window.clearTimeout(clearTimerRef.current);
+    };
+  }, []);
 
   const handleEncryptText = useCallback(async () => {
     if (!plain || !encPass) return;
@@ -53,6 +63,11 @@ export function EncView({ onOpenGuide }: EncViewProps) {
 
   const handleEncryptFile = useCallback(async () => {
     if (!encPass || !encFile) return;
+    if (encFile.size > MAX_FILE_BYTES) {
+      setError(`file too large (${Math.ceil(encFile.size / (1024 * 1024))}MB). max 25MB.`);
+      push("file too large", "danger");
+      return;
+    }
     try {
       const bytes = new Uint8Array(await encFile.arrayBuffer());
       const { blob } = await encryptBytes(encPass, bytes, { mime: encFile.type, name: encFile.name });
@@ -108,22 +123,29 @@ export function EncView({ onOpenGuide }: EncViewProps) {
 
   const downloadEncryptedFile = () => {
     if (!encFileBlob) return;
-    const url = URL.createObjectURL(new Blob([encFileBlob], { type: "text/plain" }));
+    const url = URL.createObjectURL(new Blob([encFileBlob], { type: "text/plain;charset=utf-8" }));
     const link = document.createElement("a");
     link.href = url;
     link.download = `${encFile?.name ?? "payload"}.nullid`;
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    // Safari/iOS can cancel downloads if revoked synchronously.
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
   };
 
   const downloadDecryptedFile = () => {
     if (!decFileBlob) return;
-    const url = URL.createObjectURL(new Blob([decFileBlob.buffer as ArrayBuffer], { type: decMime }));
+    // Ensure we hand Blob an ArrayBuffer (some TS libdefs dislike Uint8Array<ArrayBufferLike>).
+    const copy = new Uint8Array(decFileBlob);
+    const url = URL.createObjectURL(new Blob([copy.buffer], { type: decMime }));
     const link = document.createElement("a");
     link.href = url;
     link.download = decFileName ?? "decrypted.bin";
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
   };
 
   useEffect(() => {
