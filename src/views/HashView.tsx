@@ -67,6 +67,9 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
     return result.hex;
   }, [algorithm, displayFormat, result, source]);
 
+  const normalizedVerify = useMemo(() => normalizeHashInput(verifyValue), [verifyValue]);
+  const expectedLength = useMemo(() => expectedHashLengths[algorithm], [algorithm]);
+
   const isBusy = progress > 0 && progress < 100;
 
   const computeHash = useCallback(
