@@ -32,6 +32,7 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
   const [displayFormat, setDisplayFormat] = useState<HashDisplayFormat>("hex");
   const [textValue, setTextValue] = useState("");
   const [verifyValue, setVerifyValue] = useState("");
+  const [debouncedVerifyValue, setDebouncedVerifyValue] = useState("");
   const [result, setResult] = useState<{ hex: string; base64: string } | null>(null);
   const [source, setSource] = useState<HashSource | null>(null);
   const [fileName, setFileName] = useState<string>("none");
@@ -48,10 +49,6 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
   const [isComposing, setIsComposing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileCompareRef = useRef<HTMLInputElement>(null);
-  const algorithmRef = useRef(algorithm);
-  const resultRef = useRef(result);
-  const verifyValueRef = useRef(verifyValue);
-  const onStatusRef = useRef(onStatus);
 
   const MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB (prevents browser OOM)
   const MAX_TEXT_CHARS = 1_000_000; // ~1MB text safety guard
@@ -66,9 +63,6 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
     }
     return result.hex;
   }, [algorithm, displayFormat, result, source]);
-
-  const normalizedVerify = useMemo(() => normalizeHashInput(verifyValue), [verifyValue]);
-  const expectedLength = useMemo(() => expectedHashLengths[algorithm], [algorithm]);
 
   const isBusy = progress > 0 && progress < 100;
 
@@ -189,42 +183,36 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
     onStatus?.("cleared", "neutral");
   }, [onStatus]);
 
-  const compare = useCallback(() => {
-    const currentResult = resultRef.current;
-    const currentVerify = verifyValueRef.current;
-    const currentAlgorithm = algorithmRef.current;
-    const status = onStatusRef.current;
-    if (!currentResult) {
-      setComparison("invalid");
-      status?.("digest missing", "danger");
-      return;
-    }
-    const normalized = normalizeHashInput(currentVerify);
-    const expected = expectedHashLengths[currentAlgorithm];
-    if (!normalized || (expected && normalized.length !== expected)) {
-      setComparison("invalid");
-      status?.("invalid hash", "danger");
-      return;
-    }
-    const match = normalized === normalizeHashInput(currentResult.hex);
-    setComparison(match ? "match" : "mismatch");
-    status?.(match ? "hash match" : "hash mismatch", match ? "accent" : "danger");
-  }, []);
+  const compare = useCallback(
+    (value?: string) => {
+      const currentResult = result;
+      const currentVerify = value ?? debouncedVerifyValue;
+      const status = onStatus;
+      const expected = expectedHashLengths[algorithm];
+      if (!currentResult) {
+        setComparison("invalid");
+        status?.("digest missing", "danger");
+        return;
+      }
+      const normalized = normalizeHashInput(currentVerify);
+      if (!normalized || (expected && normalized.length !== expected)) {
+        setComparison("invalid");
+        status?.("invalid hash", "danger");
+        return;
+      }
+      const match = normalized === normalizeHashInput(currentResult.hex);
+      setComparison(match ? "match" : "mismatch");
+      status?.(match ? "hash match" : "hash mismatch", match ? "accent" : "danger");
+    },
+    [algorithm, debouncedVerifyValue, onStatus, result],
+  );
 
   const handleVerifyChange = useCallback(
     (value: string) => {
       setVerifyValue(value);
       setComparison("idle");
-      if (verifyDebounceRef.current) window.clearTimeout(verifyDebounceRef.current);
-      const token = (verifyTokenRef.current += 1);
-      verifyDebounceRef.current = window.setTimeout(() => {
-        if (verifyTokenRef.current === token) {
-          compare();
-          verifyDebounceRef.current = null;
-        }
-      }, 200);
     },
-    [compare],
+    [],
   );
 
   useEffect(() => {
@@ -234,20 +222,23 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
   }, [algorithm, computeHash, source]);
 
   useEffect(() => {
-    algorithmRef.current = algorithm;
-  }, [algorithm]);
-
-  useEffect(() => {
-    resultRef.current = result;
-  }, [result]);
-
-  useEffect(() => {
-    verifyValueRef.current = verifyValue;
+    if (verifyDebounceRef.current) window.clearTimeout(verifyDebounceRef.current);
+    const token = (verifyTokenRef.current += 1);
+    verifyDebounceRef.current = window.setTimeout(() => {
+      if (verifyTokenRef.current === token) {
+        setDebouncedVerifyValue(verifyValue);
+        verifyDebounceRef.current = null;
+      }
+    }, 200);
   }, [verifyValue]);
 
   useEffect(() => {
-    onStatusRef.current = onStatus;
-  }, [onStatus]);
+    if (!debouncedVerifyValue) {
+      setComparison("idle");
+      return;
+    }
+    compare();
+  }, [compare, debouncedVerifyValue]);
 
   useEffect(() => {
     onRegisterActions?.({ copyDigest, clearInputs, compare });
@@ -392,11 +383,11 @@ export function HashView({ onRegisterActions, onStatus, onOpenGuide }: HashViewP
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-                  compare();
+                  compare(verifyValue);
                 }
               }}
             />
-            <button className="button" type="button" onClick={compare} disabled={!verifyValue}>
+            <button className="button" type="button" onClick={() => compare(verifyValue)} disabled={!verifyValue}>
               compare
             </button>
           </div>
